@@ -24,7 +24,10 @@ body{background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"S
 .ahead{padding-bottom:1vh;border-bottom:2px solid #2b3849}
 .ahead h2{margin:0;font-size:min(1.9vw,3.6vh);letter-spacing:.05em}
 .ahead .c{color:var(--c1)}.ahead .i{color:var(--c2)}
-.r{padding:.9vh 0;border-bottom:1px solid #243041;font-size:min(1.9vw,3.7vh);align-items:start}
+.r{padding:.9vh 0;border-bottom:1px solid #243041;font-size:calc(min(1.9vw,3.7vh)*var(--k,1));align-items:start}
+.agenda{display:flex;flex-direction:column}
+#agb{flex:1;min-height:0;overflow:hidden}
+.hidepast .r.past{display:none}
 .r b{color:var(--mu);font-variant-numeric:tabular-nums}
 .r.past{opacity:.28}
 .cell div{padding:.1vh 0}
@@ -79,7 +82,7 @@ input{width:100%;background:#0f151e;color:var(--tx);border:1px solid #2b3849;bor
 
 <script>
 // Se quiser, cole o link da planilha aqui e não precisa configurar na tela:
-const SHEET_URL='';
+const SHEET_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vSxNuoUJ6PvQM9rnhgWEV-gEyTt0gwGvHiaIffnmIlXrE_IE8HLbz-3WeOwo_PZgkG-jN2zVc8AL_ou/pub?gid=2039905258&single=true&output=csv';
 // Local do clima (Curitibanos, SC)
 const LAT=-27.2833,LON=-50.5833;
 
@@ -112,6 +115,12 @@ function agenda(now){
     });
     box.appendChild(row);
   });
+  fit(box);
+}
+function fit(box){
+  box.classList.remove('hidepast');let k=1;box.style.setProperty('--k',k);
+  while(box.scrollHeight>box.clientHeight+1&&k>.55){k-=.05;box.style.setProperty('--k',k)}
+  if(box.scrollHeight>box.clientHeight+1)box.classList.add('hidepast');
 }
 function tick(){
   const d=new Date(),now=d.getHours()*60+d.getMinutes();
@@ -199,6 +208,7 @@ $('cancel').onclick=()=>$('dlg').close();
 $('ok').onclick=()=>{URLCSV=$('url').value.trim();try{localStorage.setItem(KEY,URLCSV)}catch(e){}$('dlg').close();load()};
 $('fs').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
 
+window.addEventListener('resize',()=>{tick.k='';tick()});
 tick();weather();recado();
 if(!URLCSV){$('url').value='';setTimeout(()=>$('dlg').showModal(),400)}else load();
 setInterval(tick,1000);
