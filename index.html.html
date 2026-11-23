@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel da TV</title>
+<style>
+:root{color-scheme:dark;--bg:#0c1118;--card:#161d28;--tx:#f3f6fb;--mu:#8d99ab;--c1:#5ab0ff;--c2:#ff8fb8}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;overflow:hidden}
+.grid{height:100%;display:grid;grid-template-columns:1fr 1fr 1.1fr;grid-template-rows:auto 1fr;gap:1.6vw;padding:2vw}
+.card{background:var(--card);border-radius:1.6vw;padding:1.8vw;min-height:0;overflow:hidden}
+.clock{grid-column:1/3;display:flex;flex-direction:column;justify-content:center}
+#time{font-size:min(11vw,20vh);font-weight:700;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+#date{font-size:min(2.6vw,4.6vh);color:var(--mu);margin-top:.8vh;text-transform:capitalize}
+#greet{font-size:min(2vw,3.6vh);color:var(--c1);margin-top:.8vh}
+.weather{display:flex;align-items:center;gap:1.6vw}
+#wi{font-size:min(8vw,14vh)}
+#wt{font-size:min(5.5vw,10vh);font-weight:700;line-height:1}
+#wc{font-size:min(2vw,3.6vh);margin-top:.5vh}
+#wm{font-size:min(1.6vw,3vh);color:var(--mu);margin-top:.5vh}
+h2{margin:0 0 1.2vh;font-size:min(2.2vw,4vh);font-weight:700;letter-spacing:.04em}
+.caio h2{color:var(--c1)}.isa h2{color:var(--c2)}
+ul{list-style:none;margin:0;padding:0}
+.ag li{display:flex;gap:1.2vw;font-size:min(2.2vw,4.2vh);padding:.9vh 0;border-bottom:1px solid #243041;opacity:.9}
+.ag li b{min-width:5ch;font-variant-numeric:tabular-nums}
+.caio li b{color:var(--c1)}.isa li b{color:var(--c2)}
+.ag li.past{opacity:.28}
+.ag li.next{opacity:1;color:#fff;font-weight:700}
+.empty{color:var(--mu);font-size:min(1.8vw,3.4vh)}
+.side{display:flex;flex-direction:column;gap:1.6vw;min-height:0}
+.photo{flex:1.4;position:relative;padding:0}
+.ph{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.2s}
+.ph.on{opacity:1}
+.noph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--mu);font-size:min(1.8vw,3.4vh);text-align:center;padding:2vw}
+.rec{flex:1;display:flex;flex-direction:column;justify-content:center}
+.rec h2{color:#ffd166}
+#rt{font-size:min(2.6vw,5vh);font-weight:600;line-height:1.25;transition:opacity .5s}
+.tools{position:fixed;right:.8vw;bottom:.8vw;display:flex;gap:.5vw;opacity:.15;transition:opacity .3s}
+.tools:hover,.tools:focus-within{opacity:1}
+.tools button{background:#222c3b;color:var(--tx);border:0;border-radius:8px;font-size:max(18px,1.6vw);padding:.5vw .9vw;cursor:pointer}
+dialog{background:#171f2b;color:var(--tx);border:1px solid #2b3849;border-radius:16px;padding:22px;width:min(620px,94vw)}
+dialog::backdrop{background:rgba(0,0,0,.65)}
+dialog p{color:var(--mu);font-size:15px;line-height:1.5;margin:8px 0}
+input{width:100%;background:#0f151e;color:var(--tx);border:1px solid #2b3849;border-radius:8px;padding:10px;font:inherit;font-size:16px;margin-top:6px}
+.btns{display:flex;gap:10px;margin-top:14px}
+.btns button{background:#2a3a52;color:var(--tx);border:0;border-radius:8px;padding:10px 16px;font-size:15px;cursor:pointer}
+@media (max-aspect-ratio:1/1){body{overflow:auto}.grid{grid-template-columns:1fr;height:auto}.clock{grid-column:1}.side{min-height:90vh}}
+</style>
+</head>
+<body>
+<div class="grid">
+  <section class="card clock"><div id="time">--:--</div><div id="date"></div><div id="greet"></div></section>
+  <section class="card weather"><div id="wi">⏳</div><div><div id="wt">--°C</div><div id="wc">Buscando o clima…</div><div id="wm"></div></div></section>
+  <section class="card caio"><h2>CAIO</h2><ul class="ag" id="ag_caio"></ul></section>
+  <section class="card isa"><h2>ISADORA</h2><ul class="ag" id="ag_isadora"></ul></section>
+  <div class="side">
+    <section class="card photo"><div class="ph on" id="pa"></div><div class="ph" id="pb"></div><div class="noph" id="nop">Sem fotos ainda.<br>Adicione links na planilha (tipo: foto).</div></section>
+    <section class="card rec"><h2>RECADOS</h2><div id="rt"></div></section>
+  </div>
+</div>
+<div class="tools"><button id="fs" title="Tela cheia">⛶</button><button id="cfg" title="Configurar planilha">⚙</button></div>
+
+<dialog id="dlg">
+  <h3 style="margin:0 0 6px">Ligar à planilha</h3>
+  <p>Cole aqui o link da planilha publicada como CSV (Arquivo → Compartilhar → Publicar na Web → formato CSV).</p>
+  <input id="url" placeholder="https://docs.google.com/spreadsheets/d/e/.../pub?output=csv">
+  <div class="btns"><button id="ok">Salvar</button><button id="cancel">Fechar</button></div>
+</dialog>
+
+<script>
+// Se quiser, cole o link da planilha aqui e não precisa configurar na tela:
+const SHEET_URL='';
+// Local do clima (Curitibanos, SC)
+const LAT=-27.2833,LON=-50.5833;
+
+const KEY='painelTV2';
+const $=id=>document.getElementById(id);
+let URLCSV=(SHEET_URL||localStorage.getItem(KEY)||'').trim();
+let D={caio:[],isadora:[],recado:[],foto:[]};
+
+/* ---------- relógio e agenda ---------- */
+function agenda(id,items,now){
+  const ul=$(id);ul.textContent='';
+  if(!items.length){const li=document.createElement('li');li.className='empty';li.textContent='Nada por enquanto.';ul.appendChild(li);return}
+  const list=items.map(i=>{const m=i.h.match(/^(\d{1,2}):(\d{2})/);return {t:m?+m[1]*60+ +m[2]:9999,h:m?m[1].padStart(2,'0')+':'+m[2]:'•',x:i.x}}).sort((a,b)=>a.t-b.t);
+  const nx=list.find(i=>i.t>=now&&i.t<9999);
+  list.forEach(i=>{
+    const li=document.createElement('li'),b=document.createElement('b'),s=document.createElement('span');
+    b.textContent=i.h;s.textContent=i.x;li.append(b,s);
+    if(i.t<now)li.className='past';else if(i===nx)li.className='next';
+    ul.appendChild(li);
+  });
+}
+function tick(){
+  const d=new Date(),now=d.getHours()*60+d.getMinutes();
+  $('time').textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  $('date').textContent=d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+  const h=d.getHours();$('greet').textContent=h<12?'Bom dia!':h<18?'Boa tarde!':'Boa noite!';
+  agenda('ag_caio',D.caio,now);agenda('ag_isadora',D.isadora,now);
+}
+
+/* ---------- clima (Open-Meteo, automático) ---------- */
+const WC={0:['☀️','Céu limpo'],1:['🌤️','Poucas nuvens'],2:['⛅','Parcialmente nublado'],3:['☁️','Nublado'],45:['🌫️','Neblina'],48:['🌫️','Neblina'],51:['🌦️','Garoa'],53:['🌦️','Garoa'],55:['🌦️','Garoa forte'],61:['🌧️','Chuva fraca'],63:['🌧️','Chuva'],65:['🌧️','Chuva forte'],71:['❄️','Neve'],73:['❄️','Neve'],75:['❄️','Neve'],80:['🌧️','Pancadas de chuva'],81:['🌧️','Pancadas de chuva'],82:['🌧️','Chuva forte'],95:['⛈️','Tempestade'],96:['⛈️','Tempestade'],99:['⛈️','Tempestade']};
+async function weather(){
+  try{
+    const u='https://api.open-meteo.com/v1/forecast?latitude='+LAT+'&longitude='+LON+'&current=temperature_2m,weather_code,is_day&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=America%2FSao_Paulo&forecast_days=1';
+    const r=await fetch(u);if(!r.ok)throw 0;const j=await r.json();
+    const c=j.current,d=j.daily,w=WC[c.weather_code]||['🌡️','—'];
+    $('wi').textContent=(!c.is_day&&c.weather_code<=1)?'🌙':w[0];
+    $('wt').textContent=Math.round(c.temperature_2m)+'°C';
+    $('wc').textContent=w[1];
+    $('wm').textContent='Mín. '+Math.round(d.temperature_2m_min[0])+'° · Máx. '+Math.round(d.temperature_2m_max[0])+'° · Chuva '+d.precipitation_probability_max[0]+'%';
+  }catch(e){if($('wc').textContent.startsWith('Buscando'))$('wc').textContent='Clima indisponível'}
+}
+
+/* ---------- planilha ---------- */
+function csv(t){const r=[];let row=[],c='',q=false;for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch=='"'){if(t[i+1]=='"'){c+='"';i++}else q=false}else c+=ch}else if(ch=='"')q=true;else if(ch==','){row.push(c);c=''}else if(ch=='\n'||ch=='\r'){if(ch=='\r'&&t[i+1]=='\n')i++;row.push(c);r.push(row);row=[];c=''}else c+=ch}if(c||row.length){row.push(c);r.push(row)}return r}
+const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+function img(u){u=u.trim();const m=u.match(/drive\.google\.com\/file\/d\/([\w-]+)/)||u.match(/drive\.google\.com\/(?:open|uc)\?.*id=([\w-]+)/);return m?'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w1600':u}
+function apply(txt){
+  const n={caio:[],isadora:[],recado:[],foto:[]};
+  csv(txt).forEach((r,i)=>{
+    const t=norm(r[0]);if(!t||t==='tipo')return;
+    const h=(r[1]||'').trim(),x=(r[2]||'').trim();
+    if(t==='caio'||t==='isadora'){if(x||h)n[t].push({h:x?h:'',x:x||h})}
+    else if(t==='recado'||t==='recados'){const m=x||h;if(m)n.recado.push(m)}
+    else if(t==='foto'||t==='fotos'){(x||h).split(/[\s,;]+/).forEach(l=>{if(/^https?:/i.test(l))n.foto.push(img(l))})}
+  });
+  D=n;tick();
+  if(ri>=D.recado.length)ri=0;if(pi>=D.foto.length)pi=0;
+  $('nop').style.display=D.foto.length?'none':'flex';
+  if(!D.foto.length){$('pa').classList.remove('on');$('pb').classList.remove('on')}
+}
+async function load(){
+  if(!URLCSV)return;
+  try{
+    const res=await fetch(URLCSV+(URLCSV.includes('?')?'&':'?')+'t='+Date.now(),{cache:'no-store'});
+    if(!res.ok)throw 0;const txt=await res.text();
+    try{localStorage.setItem(KEY+'d',txt)}catch(e){}
+    apply(txt);
+  }catch(e){const c=localStorage.getItem(KEY+'d');if(c)apply(c)}
+}
+
+/* ---------- recados e fotos ---------- */
+let ri=0,pi=0,front=true;
+function recado(){
+  const t=$('rt');t.style.opacity=0;
+  setTimeout(()=>{
+    t.textContent=D.recado.length?D.recado[ri%D.recado.length]:'Sem recados. Escreva um na planilha.';
+    t.style.opacity=1;ri=(ri+1)%Math.max(D.recado.length,1);
+  },400);
+}
+function foto(){
+  if(!D.foto.length)return;
+  const u=D.foto[pi%D.foto.length];pi=(pi+1)%D.foto.length;
+  const im=new Image();
+  im.onload=()=>{
+    const a=$(front?'pb':'pa'),b=$(front?'pa':'pb');
+    a.style.backgroundImage='url("'+u+'")';a.classList.add('on');b.classList.remove('on');front=!front;
+  };
+  im.onerror=()=>{};
+  im.src=u;
+}
+
+/* ---------- configuração ---------- */
+$('cfg').onclick=()=>{$('url').value=URLCSV;$('dlg').showModal()};
+$('cancel').onclick=()=>$('dlg').close();
+$('ok').onclick=()=>{URLCSV=$('url').value.trim();try{localStorage.setItem(KEY,URLCSV)}catch(e){}$('dlg').close();load()};
+$('fs').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
+
+tick();weather();recado();
+if(!URLCSV){$('url').value='';setTimeout(()=>$('dlg').showModal(),400)}else load();
+setInterval(tick,1000);
+setInterval(weather,15*60*1000);
+setInterval(load,60*1000);
+setInterval(recado,10000);
+setInterval(foto,10000);
+setTimeout(foto,2500);
+try{navigator.wakeLock&&navigator.wakeLock.request('screen')}catch(e){}
+</script>
+</body>
+</html>
