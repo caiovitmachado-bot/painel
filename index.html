@@ -5,69 +5,69 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Painel da TV</title>
 <style>
-:root{color-scheme:dark;--bg:#0c1118;--card:#161d28;--tx:#f3f6fb;--mu:#8d99ab;--c1:#5ab0ff;--c2:#ff8fb8}
+:root{color-scheme:dark;--bg:#0c1118;--card:#161d28;--tx:#f3f6fb;--mu:#8d99ab;--ac:#5ab0ff;--gd:#ffd166}
 *,*::before,*::after{box-sizing:border-box}
 html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;overflow:hidden}
-.grid{height:100%;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr;gap:1.6vw;padding:2vw}
+.grid{height:100%;display:grid;grid-template-columns:1.3fr 1fr;grid-template-rows:31vh 1fr;grid-gap:1.6vw;gap:1.6vw;padding:2vw}
 .card{background:var(--card);border-radius:1.6vw;padding:1.8vw;min-height:0;overflow:hidden}
-.top{display:flex;align-items:center;justify-content:space-between;gap:1.5vw}
-#time{font-size:min(8vw,17vh);font-weight:700;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-#date{font-size:min(1.9vw,3.6vh);color:var(--mu);margin-top:.8vh}
-#greet{font-size:min(1.6vw,3vh);color:var(--c1);margin-top:.6vh}
-.weather{display:flex;align-items:center;gap:1.2vw;padding-left:1.5vw;border-left:1px solid #243041}
-#wt{font-size:min(4vw,8vh);font-weight:700;line-height:1}
-#wc{font-size:min(1.6vw,3vh);margin-top:.4vh}
-#wm{font-size:min(1.3vw,2.5vh);color:var(--mu);margin-top:.4vh}
-.ahead,.r{display:grid;grid-template-columns:6ch 1fr 1fr;gap:1.2vw}
-.ahead{padding-bottom:1vh;border-bottom:2px solid #2b3849}
-.ahead h2{margin:0;font-size:min(1.9vw,3.6vh);letter-spacing:.05em}
-.ahead .c{color:var(--c1)}.ahead .i{color:var(--c2)}
-.r{padding:.9vh 0;border-bottom:1px solid #243041;font-size:calc(min(1.9vw,3.7vh)*var(--k,1));align-items:start}
-.agenda{display:flex;flex-direction:column}
-#agb{flex:1;min-height:0;overflow:hidden}
-.hidepast .r.past{display:none}
-.r b{color:var(--mu);font-variant-numeric:tabular-nums}
-.r.past{opacity:.28}
-.cell div{padding:.1vh 0}
-.cell.nc.next{color:var(--c1);font-weight:700}
-.cell.ni.next{color:var(--c2);font-weight:700}
-.empty{color:var(--mu);font-size:min(1.8vw,3.4vh);padding-top:1.5vh}
-.side{grid-column:2;grid-row:1/3;display:flex;flex-direction:column;gap:1.6vw;min-height:0}
-.photo{flex:4;position:relative;padding:0;background:#000}
+h2{margin:0 0 1vw;font-size:1.5vw;letter-spacing:.06em;font-weight:700}
+.top{display:flex;align-items:stretch}
+.tl{flex:none;display:flex;flex-direction:column;justify-content:center;margin-right:2vw}
+#time{font-size:8vw;font-weight:700;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+#date{font-size:1.9vw;color:var(--mu);margin-top:.6vw}
+#greet{font-size:1.5vw;color:var(--ac);margin-top:.4vw}
+#cd{display:inline-block;align-self:flex-start;margin-top:.9vw;font-size:1.2vw;color:var(--gd);background:#232c3b;border-radius:2vw;padding:.4vw 1.1vw}
+.verse{flex:1;min-width:0;display:flex;flex-direction:column;border-left:1px solid #243041;padding-left:2vw}
+.vh{font-size:1.3vw;letter-spacing:.08em;color:var(--gd);font-weight:700;margin-bottom:.6vw}
+.vbox{flex:1;min-height:0;overflow:hidden;display:flex;align-items:center}
+#vin{width:100%}
+#vtx{line-height:1.3;font-weight:600}
+#vrf{color:var(--mu);margin-top:.5em;font-size:.8em}
+.trn{display:flex;flex-direction:column}
+.trn h2{color:var(--ac)}
+#trb{flex:1;min-height:0;overflow:hidden}
+.tr{display:flex;padding:.6vw .8vw;border-bottom:1px solid #243041;border-radius:.6vw}
+.tr b{flex:none;width:6.5em;color:var(--mu)}
+.tr span{flex:1}
+.tr.hoje{background:rgba(90,176,255,.14);color:#fff;font-weight:700;border-bottom-color:transparent}
+.tr.hoje b{color:var(--ac)}
+.side{grid-column:2;grid-row:1/3;display:flex;flex-direction:column;min-height:0}
+.side .card+.card{margin-top:1.6vw}
+.photo{flex:1.5;position:relative;padding:0;background:#000}
 .ph{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;transition:opacity 1.2s;overflow:hidden}
 .ph.on{opacity:1}
 .ph .bg{position:absolute;top:-6%;left:-6%;width:112%;height:112%;background-position:center;background-size:cover;background-repeat:no-repeat;-webkit-filter:blur(28px) brightness(.5);filter:blur(28px) brightness(.5)}
 .ph .fg{position:absolute;top:0;left:0;width:100%;height:100%;background-position:center;background-size:contain;background-repeat:no-repeat}
-.noph{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--mu);font-size:min(1.8vw,3.4vh);text-align:center;padding:2vw}
-.rec{flex:1;display:flex;flex-direction:column;justify-content:center}
-.rec h2{margin:0 0 1vh;font-size:min(1.6vw,3vh);letter-spacing:.06em;color:#ffd166}
-#rt{font-size:min(2.4vw,4.6vh);font-weight:600;line-height:1.25;transition:opacity .5s}
-.tools{position:fixed;right:.8vw;bottom:.8vw;display:flex;gap:.5vw;opacity:.15;transition:opacity .3s;z-index:5}
+.noph{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:var(--mu);font-size:1.6vw;text-align:center;padding:2vw}
+.rec,.tema{flex:1;display:flex;flex-direction:column;justify-content:center}
+.rec h2{color:var(--gd)}
+.tema h2{color:#9be0a8}
+#rt,#tm{font-size:2.3vw;font-weight:600;line-height:1.25}
+#rt{transition:opacity .5s}
+.tools{position:fixed;right:.8vw;bottom:.8vw;display:flex;opacity:.15;transition:opacity .3s;z-index:5}
 .tools:hover,.tools:focus-within{opacity:1}
-.tools button{background:#222c3b;color:var(--tx);border:0;border-radius:8px;font-size:max(18px,1.6vw);padding:.5vw .9vw;cursor:pointer}
-dialog{background:#171f2b;color:var(--tx);border:1px solid #2b3849;border-radius:16px;padding:22px;width:min(620px,94vw)}
+.tools button{background:#222c3b;color:var(--tx);border:0;border-radius:8px;font-size:22px;padding:6px 12px;margin-left:6px;cursor:pointer}
+dialog{background:#171f2b;color:var(--tx);border:1px solid #2b3849;border-radius:16px;padding:22px;width:94%;max-width:620px}
 dialog::backdrop{background:rgba(0,0,0,.65)}
 dialog p{color:var(--mu);font-size:15px;line-height:1.5;margin:8px 0}
 input{width:100%;background:#0f151e;color:var(--tx);border:1px solid #2b3849;border-radius:8px;padding:10px;font:inherit;font-size:16px;margin-top:6px}
-.btns{display:flex;gap:10px;margin-top:14px}
-.btns button{background:#2a3a52;color:var(--tx);border:0;border-radius:8px;padding:10px 16px;font-size:15px;cursor:pointer}
-@media (max-aspect-ratio:1/1){body{overflow:auto}.grid{grid-template-columns:1fr;height:auto}.side{grid-column:1;grid-row:auto;min-height:90vh}.top{flex-wrap:wrap}.ahead,.r{font-size:18px}}
+.btns{margin-top:14px}
+.btns button{background:#2a3a52;color:var(--tx);border:0;border-radius:8px;padding:10px 16px;margin-right:10px;font-size:15px;cursor:pointer}
+@media (max-aspect-ratio:1/1){body{overflow:auto}.grid{display:block;height:auto}.card{margin-bottom:16px}.side{min-height:90vh}.top{flex-wrap:wrap}#time{font-size:22vw}h2,.vh{font-size:16px}#date,#greet,#cd{font-size:16px}#rt,#tm,.tr{font-size:20px}}
 </style>
 </head>
 <body>
 <div class="grid">
   <section class="card top">
-    <div><div id="time">--:--</div><div id="date"></div><div id="greet"></div></div>
-    <div class="weather"><div><div id="wt">--°C</div><div id="wc">Buscando o clima…</div><div id="wm"></div></div></div>
+    <div class="tl"><div id="time">--:--</div><div id="date"></div><div id="greet"></div><div id="cd"></div></div>
+    <div class="verse"><div class="vh">VERSÍCULO DO DIA</div><div class="vbox" id="vbox"><div id="vin"><div id="vtx"></div><div id="vrf"></div></div></div></div>
   </section>
-  <section class="card agenda">
-    <div class="ahead"><span></span><h2 class="c">CAIO</h2><h2 class="i">ISADORA</h2></div>
-    <div id="agb"></div>
-  </section>
+  <section class="card trn"><h2>TREINOS DA SEMANA</h2><div id="trb"></div></section>
   <div class="side">
     <section class="card photo"><div class="ph on" id="pa"><div class="bg"></div><div class="fg"></div></div><div class="ph" id="pb"><div class="bg"></div><div class="fg"></div></div><div class="noph" id="nop">Sem fotos ainda.<br>Adicione links na planilha (tipo: foto).</div></section>
     <section class="card rec"><h2>RECADOS</h2><div id="rt"></div></section>
+    <section class="card tema"><h2>TEMA PRÓXIMA ADORAÇÃO EM FAMÍLIA</h2><div id="tm"></div></section>
   </div>
 </div>
 <div class="tools"><button id="fs" title="Tela cheia">⛶</button><button id="cfg" title="Configurar planilha">⚙</button></div>
@@ -80,68 +80,81 @@ input{width:100%;background:#0f151e;color:var(--tx);border:1px solid #2b3849;bor
 </dialog>
 
 <script>
-// Se quiser, cole o link da planilha aqui e não precisa configurar na tela:
 const SHEET_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vSxNuoUJ6PvQM9rnhgWEV-gEyTt0gwGvHiaIffnmIlXrE_IE8HLbz-3WeOwo_PZgkG-jN2zVc8AL_ou/pub?gid=2039905258&single=true&output=csv';
-// Local do clima (Curitibanos, SC)
-const LAT=-27.2833,LON=-50.5833;
+const ALVO=[2027,8,1]; // contagem regressiva: 1 de agosto de 2027
 
-const KEY='painelTV2';
+const KEY='painelTV3';
 const $=id=>document.getElementById(id);
 let URLCSV=(SHEET_URL||localStorage.getItem(KEY)||'').trim();
-let D={caio:[],isadora:[],recado:[],foto:[]};
+let D={verso:[],treino:{},tema:'',recado:[],foto:[]};
 
-/* ---------- agenda unificada ---------- */
-function agenda(now){
-  const box=$('agb');box.textContent='';
-  const rows=new Map();let u=0;
-  const nx={caio:9998,isadora:9998};
-  ['caio','isadora'].forEach(p=>D[p].forEach(i=>{
-    const m=i.h.match(/^(\d{1,2}):(\d{2})/);
-    const t=m?+m[1]*60+ +m[2]:9999;
-    const key=m?String(t):'u'+(u++);
-    if(!rows.has(key))rows.set(key,{t:t,h:m?m[1].padStart(2,'0')+':'+m[2]:'•',caio:[],isadora:[]});
-    rows.get(key)[p].push(i.x);
-    if(t>=now&&t<9999&&t<nx[p])nx[p]=t;
-  }));
-  if(!rows.size){const e=document.createElement('div');e.className='empty';e.textContent='Nada por enquanto.';box.appendChild(e);return}
-  [...rows.values()].sort((a,b)=>a.t-b.t).forEach(r=>{
-    const row=document.createElement('div');row.className='r'+(r.t<now?' past':'');
-    const b=document.createElement('b');b.textContent=r.h;row.appendChild(b);
-    [['caio','nc'],['isadora','ni']].forEach(([p,c])=>{
-      const cell=document.createElement('div');cell.className='cell '+c+(r.t===nx[p]?' next':'');
-      r[p].forEach(x=>{const d=document.createElement('div');d.textContent=x;cell.appendChild(d)});
-      row.appendChild(cell);
-    });
-    box.appendChild(row);
+/* ---------- ajuste de tamanho do texto ---------- */
+function fitVerse(){
+  const box=$('vbox'),v=$('vin');let f=2.3;
+  v.style.fontSize=f+'vw';
+  while(v.offsetHeight>box.clientHeight+1&&f>1){f-=.1;v.style.fontSize=f+'vw'}
+}
+function fitTreinos(){
+  const box=$('trb');let f=2.3;
+  box.style.fontSize=f+'vw';
+  while(box.scrollHeight>box.clientHeight+1&&f>1){f-=.1;box.style.fontSize=f+'vw'}
+}
+
+/* ---------- versículo do dia ---------- */
+function pd(s){
+  s=(s||'').trim();let m;
+  if(m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))return [+m[1],+m[2],+m[3]];
+  if(m=s.match(/^(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?/)){let y=m[3]?+m[3]:0;if(y&&y<100)y+=2000;return [y,+m[2],+m[1]]}
+  return null;
+}
+function renderVerse(){
+  const n=new Date(),yy=n.getFullYear(),hoje=yy*10000+(n.getMonth()+1)*100+n.getDate();
+  let best=null;
+  D.verso.forEach(v=>{if(v.k<=hoje&&(!best||v.k>=best.k))best=v});
+  const tx=$('vtx'),rf=$('vrf');
+  if(!best){tx.textContent='Adicione o versículo de hoje na planilha.';rf.textContent=''}
+  else{
+    const x=best.x,i=Math.max(x.lastIndexOf(' — '),x.lastIndexOf(' – '));
+    if(i>0){tx.textContent=x.slice(0,i);rf.textContent=x.slice(i+3)}else{tx.textContent=x;rf.textContent=''}
+  }
+  fitVerse();
+}
+
+/* ---------- treinos (seg, ter, qui, sex) ---------- */
+function renderTreinos(){
+  const box=$('trb');box.textContent='';
+  const dias=[['seg','Segunda',1],['ter','Terça',2],['qui','Quinta',4],['sex','Sexta',5]];
+  const hoje=new Date().getDay();
+  dias.forEach(d=>{
+    const r=document.createElement('div');r.className='tr'+(hoje===d[2]?' hoje':'');
+    const b=document.createElement('b'),s=document.createElement('span');
+    b.textContent=d[1];
+    const t=D.treino[d[0]];
+    s.textContent=t&&t.length?t.join(' · '):'—';
+    r.appendChild(b);r.appendChild(s);box.appendChild(r);
   });
-  fit(box);
+  fitTreinos();
 }
-function fit(box){
-  box.classList.remove('hidepast');let k=1;box.style.setProperty('--k',k);
-  while(box.scrollHeight>box.clientHeight+1&&k>.55){k-=.05;box.style.setProperty('--k',k)}
-  if(box.scrollHeight>box.clientHeight+1)box.classList.add('hidepast');
+
+/* ---------- contagem regressiva ---------- */
+function renderCount(){
+  const n=new Date(),a=Date.UTC(n.getFullYear(),n.getMonth(),n.getDate()),b=Date.UTC(ALVO[0],ALVO[1]-1,ALVO[2]);
+  const d=Math.round((b-a)/864e5),el=$('cd');
+  if(d<0){el.style.display='none';return}
+  el.style.display='inline-block';
+  el.textContent=d===0?'Hoje é 1º de agosto de 2027!':d===1?'Falta 1 dia · 1º de agosto de 2027':'Faltam '+d+' dias · 1º de agosto de 2027';
 }
+
+/* ---------- relógio ---------- */
+function renderAll(){renderVerse();renderTreinos();renderCount();$('tm').textContent=D.tema||'Escreva o tema na planilha.'}
 function tick(){
-  const d=new Date(),now=d.getHours()*60+d.getMinutes();
+  const d=new Date();
   $('time').textContent=d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   const s=d.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
   $('date').textContent=s.charAt(0).toUpperCase()+s.slice(1);
   const h=d.getHours();$('greet').textContent=h<12?'Bom dia!':h<18?'Boa tarde!':'Boa noite!';
-  const k=now+'|'+JSON.stringify(D.caio)+JSON.stringify(D.isadora);
-  if(k!==tick.k){tick.k=k;agenda(now)}
-}
-
-/* ---------- clima (Open-Meteo, automático) ---------- */
-const WC={0:['☀️','Céu limpo'],1:['🌤️','Poucas nuvens'],2:['⛅','Parcialmente nublado'],3:['☁️','Nublado'],45:['🌫️','Neblina'],48:['🌫️','Neblina'],51:['🌦️','Garoa'],53:['🌦️','Garoa'],55:['🌦️','Garoa forte'],61:['🌧️','Chuva fraca'],63:['🌧️','Chuva'],65:['🌧️','Chuva forte'],71:['❄️','Neve'],73:['❄️','Neve'],75:['❄️','Neve'],80:['🌧️','Pancadas de chuva'],81:['🌧️','Pancadas de chuva'],82:['🌧️','Chuva forte'],95:['⛈️','Tempestade'],96:['⛈️','Tempestade'],99:['⛈️','Tempestade']};
-async function weather(){
-  try{
-    const u='https://api.open-meteo.com/v1/forecast?latitude='+LAT+'&longitude='+LON+'&current=temperature_2m,weather_code,is_day&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=America%2FSao_Paulo&forecast_days=1';
-    const r=await fetch(u);if(!r.ok)throw 0;const j=await r.json();
-    const c=j.current,d=j.daily,w=WC[c.weather_code]||['🌡️','—'];
-    $('wt').textContent=Math.round(c.temperature_2m)+'°C';
-    $('wc').textContent=w[1];
-    $('wm').textContent='Mín. '+Math.round(d.temperature_2m_min[0])+'° · Máx. '+Math.round(d.temperature_2m_max[0])+'° · Chuva '+d.precipitation_probability_max[0]+'%';
-  }catch(e){if($('wc').textContent.startsWith('Buscando'))$('wc').textContent='Clima indisponível'}
+  const k=d.toDateString();
+  if(k!==tick.k){tick.k=k;renderAll()}
 }
 
 /* ---------- planilha ---------- */
@@ -149,15 +162,24 @@ function csv(t){const r=[];let row=[],c='',q=false;for(let i=0;i<t.length;i++){c
 const norm=s=>(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
 function img(u){u=u.trim();const m=u.match(/drive\.google\.com\/file\/d\/([\w-]+)/)||u.match(/drive\.google\.com\/(?:open|uc)\?.*id=([\w-]+)/);return m?'https://lh3.googleusercontent.com/d/'+m[1]+'=w1280':u}
 function apply(txt){
-  const n={caio:[],isadora:[],recado:[],foto:[]};
+  const n={verso:[],treino:{},tema:'',recado:[],foto:[]};
+  const yy=new Date().getFullYear();
   csv(txt).forEach(r=>{
     const t=norm(r[0]);if(!t||t==='tipo')return;
     const h=(r[1]||'').trim(),x=(r[2]||'').trim();
-    if(t==='caio'||t==='isadora'){if(x||h)n[t].push({h:x?h:'',x:x||h})}
-    else if(t==='recado'||t==='recados'){const m=x||h;if(m)n.recado.push(m)}
-    else if(t==='foto'||t==='fotos'){(x||h).split(/[\s,;]+/).forEach(l=>{if(/^https?:/i.test(l))n.foto.push(img(l))})}
+    if(t.indexOf('versic')===0||t.indexOf('biblic')===0||t.indexOf('texto')===0){
+      const p=pd(h);if(p&&x)n.verso.push({k:(p[0]||yy)*10000+p[1]*100+p[2],x:x});
+    }else if(t.indexOf('trein')===0){
+      const d=norm(h).slice(0,3);if(x&&d){(n.treino[d]=n.treino[d]||[]).push(x)}
+    }else if(t.indexOf('tema')===0){
+      if(x||h)n.tema=x||h;
+    }else if(t==='recado'||t==='recados'){
+      const m=x||h;if(m)n.recado.push(m)
+    }else if(t==='foto'||t==='fotos'){
+      (x||h).split(/[\s,;]+/).forEach(l=>{if(/^https?:/i.test(l))n.foto.push(img(l))})
+    }
   });
-  D=n;tick();
+  D=n;renderAll();
   if(ri>=D.recado.length)ri=0;if(pi>=D.foto.length)pi=0;
   $('nop').style.display=D.foto.length?'none':'flex';
   if(!D.foto.length){$('pa').classList.remove('on');$('pb').classList.remove('on')}
@@ -165,7 +187,7 @@ function apply(txt){
 async function load(){
   if(!URLCSV)return;
   try{
-    const res=await fetch(URLCSV+(URLCSV.includes('?')?'&':'?')+'t='+Date.now(),{cache:'no-store'});
+    const res=await fetch(URLCSV+(URLCSV.indexOf('?')>-1?'&':'?')+'t='+Date.now(),{cache:'no-store'});
     if(!res.ok)throw 0;const txt=await res.text();
     try{localStorage.setItem(KEY+'d',txt)}catch(e){}
     apply(txt);
@@ -181,14 +203,15 @@ function recado(){
     t.style.opacity=1;ri=(ri+1)%Math.max(D.recado.length,1);
   },400);
 }
-function alt(u){const m=u.match(/lh3\.googleusercontent\.com\/d\/([\w-]+)/);return m?'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w1600':null}
+function alt(u){const m=u.match(/lh3\.googleusercontent\.com\/d\/([\w-]+)/);return m?'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w1280':null}
 function foto(tries){
   if(!D.foto.length)return;
   tries=tries||0;
   const u=D.foto[pi%D.foto.length];pi=(pi+1)%D.foto.length;
   const show=src=>{
     const a=$(front?'pb':'pa'),b=$(front?'pa':'pb');
-    const v='url("'+src+'")';a.children[0].style.backgroundImage=v;a.children[1].style.backgroundImage=v;a.classList.add('on');b.classList.remove('on');front=!front;
+    const v='url("'+src+'")';a.children[0].style.backgroundImage=v;a.children[1].style.backgroundImage=v;
+    a.classList.add('on');b.classList.remove('on');front=!front;
   };
   const im=new Image();
   im.onload=()=>show(im.src);
@@ -206,11 +229,10 @@ $('cancel').onclick=()=>$('dlg').close();
 $('ok').onclick=()=>{URLCSV=$('url').value.trim();try{localStorage.setItem(KEY,URLCSV)}catch(e){}$('dlg').close();load()};
 $('fs').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
 
-window.addEventListener('resize',()=>{tick.k='';tick()});
-tick();weather();recado();
-if(!URLCSV){$('url').value='';setTimeout(()=>$('dlg').showModal(),400)}else load();
+window.addEventListener('resize',renderAll);
+tick();recado();
+if(!URLCSV){setTimeout(()=>$('dlg').showModal(),400)}else load();
 setInterval(tick,1000);
-setInterval(weather,15*60*1000);
 setInterval(load,60*1000);
 setInterval(recado,10000);
 setInterval(foto,10000);
